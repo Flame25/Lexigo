@@ -58,19 +58,11 @@ class LandingPage extends StatelessWidget {
                       ),
                       SizedBox(height: 20), // Space between image and text
                       Text(
-                        'Welcome to My App!',
+                        'Easy and Economical Way to Sharpen Your English Skills!',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: Colors.white, // Ensure visibility on background
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'This is a simple landing page.',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[300], // Lighter text color for contrast
                         ),
                       ),
                       SizedBox(height: 40),
