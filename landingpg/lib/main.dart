@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'Baloo2', // Apply Baloo2 globally
+        fontFamily: 'Baloo',
       ),
       home: LandingPage(),
     );
@@ -36,7 +36,7 @@ class LandingPage extends StatelessWidget {
                 title: Row(
                   children: [
                     Image.asset(
-                      'assets/star-logo.gif', // Path to your logo
+                      'assets/star-logo.png', // Path to your logo
                       height: 30, // Set height
                     ),
                     SizedBox(width: 10),
@@ -78,7 +78,7 @@ class LandingPage extends StatelessWidget {
                               textAlign: TextAlign.center, // Center-align text
                               style: TextStyle(
                                 fontSize: fontSize, // Dynamic font size
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.white,
                                 height: 1.5, // Line height for spacing
                               ),

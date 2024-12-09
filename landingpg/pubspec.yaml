@@ -66,15 +66,16 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/star-logo.gif
+    - assets/star-logo.png
     - assets/landingbg.svg
     - assets/Landingpage.png
     - assets/Anim_Landingpage.svg
     - assets/Anim_Landingpage.png
 
   fonts:
-    - family: Baloo2
+    - family: Baloo
       fonts:
-        - asset: assets/fonts/Baloo2-VariableFont_wght.ttf
+        - asset: assets/fonts/Baloo-Regular.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
