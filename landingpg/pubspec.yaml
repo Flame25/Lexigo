@@ -71,6 +71,11 @@ flutter:
     - assets/Anim_Landingpage.svg
     - assets/Anim_Landingpage.png
 
+  fonts:
+    - family: Baloo2
+      fonts:
+        - asset: assets/fonts/Baloo2-VariableFont_wght.ttf
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

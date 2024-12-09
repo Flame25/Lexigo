@@ -9,6 +9,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Baloo2', // Apply Baloo2 globally
+      ),
       home: LandingPage(),
     );
   }
@@ -37,7 +40,13 @@ class LandingPage extends StatelessWidget {
                       height: 30, // Set height
                     ),
                     SizedBox(width: 10),
-                    Text('Lexigo'),
+                    Text(
+                      'Lexigo',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
                 backgroundColor: Color(0xFFEAAD49), // Make AppBar transparent
@@ -69,7 +78,7 @@ class LandingPage extends StatelessWidget {
                               textAlign: TextAlign.center, // Center-align text
                               style: TextStyle(
                                 fontSize: fontSize, // Dynamic font size
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w900,
                                 color: Colors.white,
                                 height: 1.5, // Line height for spacing
                               ),
