@@ -59,7 +59,7 @@ class LandingPage extends StatelessWidget {
                       SizedBox(height: 20), // Space between image and text
                       Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.05, // 10% of screen width
+                          horizontal: MediaQuery.of(context).size.width * 0.07, // 10% of screen width
                         ),
                         child: LayoutBuilder(
                           builder: (BuildContext context, BoxConstraints constraints) {
@@ -78,31 +78,56 @@ class LandingPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 40),
-                      ElevatedButton(
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('START STUDY!')),
+                            SnackBar(content: Text('Button Clicked!')),
                           );
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF58A700), // Background color
-                          foregroundColor: Colors.white, // Text color
-                          padding: EdgeInsets.symmetric(vertical: 13, horizontal: 16), // Padding
-                          shape: RoundedRectangleBorder(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 13, horizontal: 16), // Padding for the button
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16), // Rounded corners
+                            color: Color(0xFF58CC02), // Primary button color
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF58A700), // Bottom border color
+                                offset: Offset(0, 4), // Simulate bottom border by shadow
+                                blurRadius: 0,
+                                spreadRadius: 0,
+                              ),
+                            ],
                           ),
-                          textStyle: TextStyle(
-                            fontFamily: 'din-round', // Font family (custom font should be added to assets if not default)
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.8, // Letter spacing
-                            textBaseline: TextBaseline.alphabetic,
+                          child: Stack(
+                            alignment: Alignment.center, // Center-align text
+                            children: [
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 4, // Create the effect of a solid bottom border
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF58CC02),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                'Start Study!'.toUpperCase(), // Text with uppercase
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white, // Text color
+                                  fontSize: 15, // Font size
+                                  fontWeight: FontWeight.w700, // Bold font weight
+                                  letterSpacing: 0.8, // Letter spacing
+                                  fontFamily: 'din-round', // Use custom font if available
+                                ),
+                              ),
+                            ],
                           ),
-                          elevation: 4, // Simulates the border effect in the CSS
                         ),
-                        child: Text('START STUDY!'.toUpperCase()), // Transform text to uppercase
                       ),
-
                     ],
                   ),
                 ),
