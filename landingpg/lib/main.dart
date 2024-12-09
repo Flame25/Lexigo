@@ -57,23 +57,52 @@ class LandingPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20), // Space between image and text
-                      Text(
-                        'Easy and Economical Way to Sharpen Your English Skills!',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white, // Ensure visibility on background
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.05, // 10% of screen width
+                        ),
+                        child: LayoutBuilder(
+                          builder: (BuildContext context, BoxConstraints constraints) {
+                            double fontSize = constraints.maxWidth * 0.1; // Scale font size based on screen width
+                            return Text(
+                              'Easy and Economic Way to Sharpen Your English Skills!',
+                              textAlign: TextAlign.center, // Center-align text
+                              style: TextStyle(
+                                fontSize: fontSize, // Dynamic font size
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                height: 1.5, // Line height for spacing
+                              ),
+                            );
+                          },
                         ),
                       ),
                       SizedBox(height: 40),
                       ElevatedButton(
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Button Clicked!')),
+                            SnackBar(content: Text('START STUDY!')),
                           );
                         },
-                        child: Text('Get Started'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF58A700), // Background color
+                          foregroundColor: Colors.white, // Text color
+                          padding: EdgeInsets.symmetric(vertical: 13, horizontal: 16), // Padding
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16), // Rounded corners
+                          ),
+                          textStyle: TextStyle(
+                            fontFamily: 'din-round', // Font family (custom font should be added to assets if not default)
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.8, // Letter spacing
+                            textBaseline: TextBaseline.alphabetic,
+                          ),
+                          elevation: 4, // Simulates the border effect in the CSS
+                        ),
+                        child: Text('START STUDY!'.toUpperCase()), // Transform text to uppercase
                       ),
+
                     ],
                   ),
                 ),
