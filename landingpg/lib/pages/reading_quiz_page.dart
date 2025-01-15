@@ -42,7 +42,10 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
             child: Column(
               children: [
                 // Header
-                const QuizHeader(title: "Read Quiz"),
+                const QuizHeader(
+                  title: "Reading Quiz",
+                  backgroundColor: Color(0xFF58CC02),
+                ),
 
                 // Progress Bar
                 const SizedBox(height: 20),

@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_svg: ^2.0.1
+  flutter_svg: ^2.0.3
   google_fonts: ^6.1.0
 
   # The following adds the Cupertino Icons font to your application.
@@ -65,15 +65,7 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-    - assets/star-logo.gif
-    - assets/star-logo.png
-    - assets/landingbg.svg
-    - assets/Landingpage.png
-    - assets/Anim_Landingpage.svg
-    - assets/Anim_Landingpage.png
-    - assets/reading_img.svg
-    - assets/listening_img.svg
-    - assets/small_profile_icon.svg
+    - assets/
 
   fonts:
     - family: Baloo

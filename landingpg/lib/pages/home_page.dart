@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/feature_card.dart';
 import '../components/header.dart';
+import '../utils/assets.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -15,7 +16,7 @@ class HomePage extends StatelessWidget {
             // Header
             Header(
               title: 'Hi, Jihan!',
-              profileIcon: 'assets/small_profile_icon.svg',
+              profileIcon: AppAssets.smallProfileIconPng, // Gunakan gambar PNG
               onProfileTap: () {
                 Navigator.pushNamed(
                   context,
@@ -35,12 +36,9 @@ class HomePage extends StatelessWidget {
             FeatureCard(
               title: 'Reading',
               description: 'Boost your English reading skills with fun!',
-              imagePath: 'assets/reading_img.svg',
+              imagePath: AppAssets.readingImagePng, // Gunakan gambar PNG
               backgroundColor: const Color(0xFF58CC02),
-              onStart: () {
-                Navigator.pushNamed(context, '/readingQuiz');
-                print("Start Reading clicked!");
-              },
+              navigateTo: '/readingQuiz',
             ),
             const SizedBox(height: 20),
 
@@ -48,11 +46,9 @@ class HomePage extends StatelessWidget {
             FeatureCard(
               title: 'Listening',
               description: 'Level up your English listening with dynamic!',
-              imagePath: 'assets/listening_img.svg',
+              imagePath: AppAssets.listeningImagePng, // Gunakan gambar PNG
               backgroundColor: const Color(0xFFFFC200),
-              onStart: () {
-                print("Start Listening clicked!");
-              },
+              navigateTo: '/listeningQuiz',
             ),
           ],
         ),

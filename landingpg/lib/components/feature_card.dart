@@ -5,7 +5,7 @@ class FeatureCard extends StatelessWidget {
   final String description;
   final String imagePath;
   final Color backgroundColor;
-  final VoidCallback onStart;
+  final String navigateTo;
 
   const FeatureCard({
     super.key,
@@ -13,82 +13,81 @@ class FeatureCard extends StatelessWidget {
     required this.description,
     required this.imagePath,
     required this.backgroundColor,
-    required this.onStart,
+    required this.navigateTo,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(13),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 4,
-            offset: const Offset(-1, 4),
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 4,
-            offset: const Offset(1, -1),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Gambar di sisi kiri
-          Container(
-            width: 109,
-            height: 223,
-            decoration: ShapeDecoration(
-              image: DecorationImage(
-                image: AssetImage(imagePath),
-                fit: BoxFit.cover,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(13),
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, navigateTo);
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(13),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 4,
+              offset: const Offset(-1, 4),
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 4,
+              offset: const Offset(1, -1),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Gambar di sisi kiri dengan padding dan sudut melengkung
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 5), // Padding kiri-kanan
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8), // Sudut melengkung
+                child: Image.asset(
+                  imagePath,
+                  width: 100,
+                  height: 145,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 20),
+            const SizedBox(width: 20),
 
-          // Informasi teks di sisi kanan
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontFamily: 'Baloo',
-                    fontWeight: FontWeight.w400,
-                    height: 1.06,
+            // Informasi teks di sisi kanan
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontFamily: 'Baloo',
+                      fontWeight: FontWeight.w400,
+                      height: 1.06,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  description,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w600,
-                    height: 1.33,
+                  const SizedBox(height: 5),
+                  Text(
+                    description,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      height: 1.33,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                // Tombol Start
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/readingQuiz'); // Arahkan ke halaman Reading Quiz
-                  },
-                  child: Container(
+                  // Tombol Start
+                  Container(
                     height: 45,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
@@ -106,7 +105,7 @@ class FeatureCard extends StatelessWidget {
                           'START',
                           style: TextStyle(
                             color: Color(0xFF58CC02),
-                            fontSize: 19,
+                            fontSize: 16,
                             fontFamily: 'Baloo',
                             fontWeight: FontWeight.w400,
                           ),
@@ -119,11 +118,11 @@ class FeatureCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
