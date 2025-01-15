@@ -34,21 +34,23 @@ class HomePage extends StatelessWidget {
 
             // Reading Card
             FeatureCard(
-              title: 'Reading',
+              title: 'Read',
               description: 'Boost your English reading skills with fun!',
-              imagePath: AppAssets.readingImagePng, // Gunakan gambar PNG
+              imagePath: AppAssets.readingImagePng,
               backgroundColor: const Color(0xFF58CC02),
               navigateTo: '/readingQuiz',
+              progress: 0.75, // Contoh progress 75%
             ),
             const SizedBox(height: 20),
 
             // Listening Card
             FeatureCard(
-              title: 'Listening',
-              description: 'Level up your English listening with dynamic!',
-              imagePath: AppAssets.listeningImagePng, // Gunakan gambar PNG
+              title: 'Listen',
+              description: 'Level up your English listening skills with dynamic!',
+              imagePath: AppAssets.listeningImagePng,
               backgroundColor: const Color(0xFFFFC200),
               navigateTo: '/listeningQuiz',
+              progress: 0.5, // Contoh progress 50%
             ),
           ],
         ),
