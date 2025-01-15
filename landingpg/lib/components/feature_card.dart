@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class FeatureCard extends StatelessWidget {
   final String title;
@@ -40,7 +39,7 @@ class FeatureCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Gambar di sisi kiri dengan gaya bulat
+          // Gambar di sisi kiri
           Container(
             width: 109,
             height: 223,
@@ -86,7 +85,9 @@ class FeatureCard extends StatelessWidget {
 
                 // Tombol Start
                 GestureDetector(
-                  onTap: onStart,
+                  onTap: () {
+                    Navigator.pushNamed(context, '/readingQuiz'); // Arahkan ke halaman Reading Quiz
+                  },
                   child: Container(
                     height: 45,
                     padding: const EdgeInsets.symmetric(horizontal: 20),

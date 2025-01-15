@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'pages/edit_profile.dart';
 import 'pages/view_profile.dart';
 import 'pages/home_page.dart';
+import 'pages/reading_quiz_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/viewProfile': (context) => ViewProfilePage(
           userData: ModalRoute.of(context)!.settings.arguments as Map<String, String>,
         ),
+        '/readingQuiz': (context) => const ReadingQuizPage(),
       },
     );
   }

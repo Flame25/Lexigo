@@ -33,11 +33,12 @@ class HomePage extends StatelessWidget {
 
             // Reading Card
             FeatureCard(
-              title: 'Read',
+              title: 'Reading',
               description: 'Boost your English reading skills with fun!',
               imagePath: 'assets/reading_img.svg',
               backgroundColor: const Color(0xFF58CC02),
               onStart: () {
+                Navigator.pushNamed(context, '/readingQuiz');
                 print("Start Reading clicked!");
               },
             ),
