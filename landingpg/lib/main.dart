@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'pages/edit_profile.dart';
+import 'pages/view_profile.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,8 +14,17 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Baloo',
+        textTheme: GoogleFonts.interTextTheme(
+          Theme.of(context).textTheme,
+        ),
       ),
-      home: LandingPage(),
+      initialRoute: '/editProfile',
+      routes: {
+        '/editProfile': (context) => const EditProfilePage(),
+        '/viewProfile': (context) => ViewProfilePage(
+          userData: ModalRoute.of(context)!.settings.arguments as Map<String, String>,
+        ),
+      },
     );
   }
 }
