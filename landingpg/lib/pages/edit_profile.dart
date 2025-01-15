@@ -131,11 +131,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     controller: passwordController,
                   ),
                   const SizedBox(height: 20),
-                  InputField(
-                    label: "Date of Birth",
-                    placeholder: "Enter your date of birth",
-                    controller: dateOfBirthController,
-                  ),
                 ],
               ),
             ),

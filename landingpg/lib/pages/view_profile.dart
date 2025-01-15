@@ -36,7 +36,9 @@ class ViewProfilePage extends StatelessWidget {
                     top: 60,
                     child: IconButton(
                       icon: const Icon(Icons.arrow_back, size: 28, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/home');
+                      },
                     ),
                   ),
                   const Positioned(
