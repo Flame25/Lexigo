@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'pages/edit_profile.dart';
 import 'pages/view_profile.dart';
+import 'pages/home_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,8 +19,9 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme,
         ),
       ),
-      initialRoute: '/editProfile',
+      initialRoute: '/home',
       routes: {
+        '/home': (context) => const HomePage(),
         '/editProfile': (context) => const EditProfilePage(),
         '/viewProfile': (context) => ViewProfilePage(
           userData: ModalRoute.of(context)!.settings.arguments as Map<String, String>,

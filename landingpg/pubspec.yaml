@@ -71,6 +71,9 @@ flutter:
     - assets/Landingpage.png
     - assets/Anim_Landingpage.svg
     - assets/Anim_Landingpage.png
+    - assets/reading_img.svg
+    - assets/listening_img.svg
+    - assets/small_profile_icon.svg
 
   fonts:
     - family: Baloo
