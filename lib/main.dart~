@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:lexigo/editprofile.dart';
-import 'package:lexigo/homepage.dart';
-import 'package:lexigo/listening.dart';
-import 'package:lexigo/profile.dart';
-import 'package:lexigo/reading.dart';
 import 'landingpage.dart';
 
 void main() {
@@ -19,18 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Baloo2'),
-      initialRoute: '/splash',
-      routes: {
-        '/': (context) => LandingPage(),
-        '/home': (context) => HomePage(),
-        '/reading': (context) => ReadingQuizPage(),
-        '/listening': (context) => ListeningQuizPage(),
-        '/profile': (context) => ViewProfilePage(
-          userData: ModalRoute.of(context)!.settings.arguments as Map<String, String>,
-        ),
-        '/editprofile': (context) => EditProfilePage(),
-        '/splash': (context) => SplashScreenWithBackgroundChange()
-      },
+      home: SplashScreenWithBackgroundChange(),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lexigo/login.dart';
 
 class LandingPage extends StatelessWidget {
   @override
@@ -65,8 +64,7 @@ class LandingPage extends StatelessWidget {
                                   0.1; // Scale font size based on screen width
                               return Text(
                                 'Easy and Economic Way to Sharpen Your English Skills!',
-                                textAlign:
-                                    TextAlign.center, // Center-align text
+                                textAlign: TextAlign.center, // Center-align text
                                 style: TextStyle(
                                   fontSize: fontSize, // Dynamic font size
                                   fontWeight: FontWeight.w900,
@@ -78,56 +76,34 @@ class LandingPage extends StatelessWidget {
                           ),
                         ),
 
-                        Stack(
-                          children: [
-                            // Solid shadow
-                            Center(
-                              child: Container(
-                                padding: EdgeInsets.only(bottom: 5),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF58A700),
-                                  borderRadius: BorderRadius.circular(12.0),
-                                ),
-                                child:
-                                    // Material with Ink
-                                    Material(
-                                  elevation: 8.0, // Shadow for additional depth
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Color(0xFF58CC02), // Background color
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    LoginPage()));
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 7.0,
-                                            bottom: 7.0,
-                                            left: 12.0,
-                                            right: 12.0),
-                                        child: Text(
-                                          'START STUDY!',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18.0,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                        // Material widget wrapping InkWell to show the ripple effect
+                        Material(
+                          color: Colors.transparent, // Transparent to show the button's decoration
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(context,MaterialPageRoute(builder: (context) => LandingPage()));
+                            },
+                            borderRadius: BorderRadius.circular(16), // Ensure the ripple effect is rounded
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16), // Rounded corners
+                                color: Color(0xFF58CC02), // Primary button color
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xFF58A700), // Shadow color
+                                    offset: Offset(0, 4), // Simulate bottom border by shadow
+                                    blurRadius: 0,
+                                    spreadRadius: 0,
                                   ),
-                                ),
+                                ],
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Padding
+                              child: Text(
+                                'Click Me',
+                                style: TextStyle(color: Colors.white), // Text color
                               ),
                             ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
@@ -141,3 +117,4 @@ class LandingPage extends StatelessWidget {
     );
   }
 }
+
