@@ -1,161 +1,268 @@
 import 'package:flutter/material.dart';
 import '../components/custom_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class ViewProfilePage extends StatelessWidget {
-  final Map<String, String> userData;
+class ViewProfilePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ViewProfilePage();
+}
 
-  const ViewProfilePage({super.key, required this.userData});
+class _ViewProfilePage extends State<ViewProfilePage> {
+  Map<String, dynamic>? userInfo;
+  String? userId = "1";
+  bool isLoading = true;
+  bool isLogin = false;
+
+  Future<void> clearSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
+
+  Future<void> loadSession() async {
+    isLoading = true;
+    isLogin = false;
+
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      userId = prefs.getString("user_id");
+      isLoading = true;
+    });
+
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/user/profile'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'user_id': userId}),
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+
+      setState(() {
+        userInfo = parsedJson["user_info"];
+        isLogin = true;
+        isLoading = false;
+      });
+    } else if (response.statusCode == 400) {
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLogin = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadSession();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header dengan gradien
-            Container(
-              height: 120,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFFFFC200), Color(0xFFFFDE00)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(50),
-                  bottomRight: Radius.circular(50),
-                ),
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 20,
-                    top: 60,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back,
-                          size: 28, color: Colors.white),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/home');
-                      },
-                    ),
+    return WillPopScope(
+      onWillPop: () async {
+        print("HAI");
+        Navigator.pop(context, true);
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF7F7F7),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header dengan gradien
+              Container(
+                height: 120,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFFFC200), Color(0xFFFFDE00)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  const Positioned(
-                    top: 60,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: Text(
-                        'My Profile',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontWeight: FontWeight.w200,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
+                    bottomRight: Radius.circular(50),
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 20,
+                      top: 60,
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back,
+                            size: 28, color: Colors.white),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/home');
+                        },
+                      ),
+                    ),
+                    const Positioned(
+                      top: 60,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Text(
+                          'My Profile',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.w200,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
 
-            // Profil Foto
-            Center(
-              child: CircleAvatar(
-                radius: 87.5,
-                backgroundImage:
-                    const NetworkImage("https://via.placeholder.com/175"),
-                backgroundColor: Colors.transparent,
-              ),
-            ),
-            const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
-            // Detail Profil
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  _buildProfileDetail(
-                    label: "Username",
-                    value: userData['username'] ?? "N/A",
-                    icon: Icons.person,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildProfileDetail(
-                    label: "Email",
-                    value: userData['email'] ?? "N/A",
-                    icon: Icons.email,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildProfileDetail(
-                    label: "Password",
-                    value: userData['password'] ?? "************",
-                    icon: Icons.lock,
-                  ),
-                ],
-              ),
-            ),
+              if (!isLogin && !isLoading)
+                AlertDialog(
+                  title: Text('You are not logged in'),
+                  content: Text('Please log in to continue.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        // You can replace this with your actual login navigation logic
+                        Navigator.pop(context); // Close the dialog
+                        Navigator.pushNamed(context, '/');
+                      },
+                      child: Text('Log In'),
+                    ),
+                  ],
+                ),
 
-            const SizedBox(height: 40),
+              if (isLoading)
+                const Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [CircularProgressIndicator()],
+                    ),
+                  ],
+                ),
 
-            // Tombol Edit Profile
-            Center(
-              child: CustomButton(
-                text: "Edit Profile",
-                width: 200,
-                backgroundColor: const Color(0xFF003566),
-                shadowColor: const Color(0xFF04153B),
-                textColor: Colors.white,
-                onPressed: () {
-                  Navigator.pushNamed(context, '/editprofile');
-                },
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Tombol Logout dan Delete Account
-            Center(
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/');
-                    },
-                    child: const Text(
-                      'Logout',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                        decoration: TextDecoration.underline,
+              if (isLogin && !isLoading)
+                Column(
+                  children: [
+                    // Profil Foto
+                    Center(
+                      child: CircleAvatar(
+                        radius: 87.5,
+                        backgroundImage: const NetworkImage(
+                            "https://via.placeholder.com/175"),
+                        backgroundColor: Colors.transparent,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/');
-                    },
-                    child: const Text(
-                      'Delete My Account',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFFEC0B1B),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 50),
-          ],
+                    const SizedBox(height: 30),
+
+                    if (isLogin && !isLoading)
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              children: [
+                                _buildProfileDetail(
+                                  label: "Username",
+                                  value: userInfo!['username'] ?? "N/A",
+                                  icon: Icons.person,
+                                ),
+                                const SizedBox(height: 20),
+                                _buildProfileDetail(
+                                  label: "Email",
+                                  value: userInfo!['email'] ?? "N/A",
+                                  icon: Icons.email,
+                                ),
+                                const SizedBox(height: 20),
+                                _buildProfileDetail(
+                                  label: "Password",
+                                  value: '*' *
+                                      userInfo!['password'].toString().length,
+                                  icon: Icons.lock,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 40),
+
+                          // Tombol Edit Profile
+                          Center(
+                            child: CustomButton(
+                              text: "Edit Profile",
+                              width: 200,
+                              backgroundColor: const Color(0xFF003566),
+                              shadowColor: const Color(0xFF04153B),
+                              textColor: Colors.white,
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/editprofile');
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Tombol Logout dan Delete Account
+                          Center(
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    clearSession();
+                                    Navigator.pushNamed(context, '/')
+                                        .then((result) {
+                                      if (result == true) {
+                                        loadSession();
+                                      }
+                                    });
+                                  },
+                                  child: const Text(
+                                    'Logout',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w400,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/');
+                                  },
+                                  child: const Text(
+                                    'Delete My Account',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Color(0xFFEC0B1B),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w400,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 50),
+                        ],
+                      )
+                  ],
+                )
+            ],
+          ),
         ),
       ),
     );

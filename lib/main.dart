@@ -12,6 +12,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  // global RouteObserver
   const MyApp({super.key});
 
   @override
@@ -25,9 +26,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/reading': (context) => ReadingQuizPage(),
         '/listening': (context) => ListeningQuizPage(),
-        '/profile': (context) => ViewProfilePage(
-          userData: ModalRoute.of(context)!.settings.arguments as Map<String, String>,
-        ),
+        '/profile': (context) => ViewProfilePage(),
         '/editprofile': (context) => EditProfilePage(),
         '/splash': (context) => SplashScreenWithBackgroundChange()
       },

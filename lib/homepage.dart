@@ -9,9 +9,58 @@ import '../components/Reading/feedback_popup.dart';
 import '../components/feature_card.dart';
 import '../components/header.dart';
 import '../utils/assets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _HomePage();
+}
+
+class _HomePage extends State<HomePage> {
+  String? username = "User";
+  String? user_id = "1";
+  int reading_progress = 0;
+  int listening_progress = 0;
+  bool isLogin = false;
+
+  Future<void> loadSession() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    reading_progress = 0;
+    listening_progress = 0;
+    username = "User";
+
+    print(user_id);
+    setState(() {
+      user_id = prefs.getString("user_id");
+    });
+
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/user/profile'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'user_id': user_id}),
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic> userInfo = parsedJson['user_info'];
+
+      setState(() {
+        username = userInfo["username"];
+        reading_progress = userInfo["reading_progress"];
+        listening_progress = userInfo["listening_progress"];
+        bool isLogin = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadSession();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,22 +71,36 @@ class HomePage extends StatelessWidget {
           children: [
             // Header
             Header(
-              title: 'Hi, Jihan!',
-              profileIcon: AppAssets.smallProfileIconPng, // Gunakan gambar PNG
+              title: 'Hi, ${username}!',
+              profileIcon:
+              AppAssets.smallProfileIconPng, // Gunakan gambar PNG
               onProfileTap: () {
                 Navigator.pushNamed(
                   context,
                   '/profile',
-                  arguments: {
-                    'username': 'Jihan Aurelia',
-                    'email': 'jihan@gmail.com',
-                    'password': '************',
-                    'dateOfBirth': '23/05/1995',
-                  },
-                );
-              },
-            ),
+                ).then((result) {
+                    if (result == true) {
+                      loadSession();
+                    }
+                });
+            }),
             const SizedBox(height: 20),
+
+            if (!isLogin)
+              AlertDialog(
+                title: Text('You are not logged in'),
+                content: Text('Please log in to continue.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      // You can replace this with your actual login navigation logic
+                      Navigator.pop(context); // Close the dialog
+                      Navigator.pushNamed(context, '/');
+                    },
+                    child: Text('Log In'),
+                  ),
+                ],
+              ),
 
             // Reading Card
             FeatureCard(
@@ -46,18 +109,19 @@ class HomePage extends StatelessWidget {
               imagePath: AppAssets.readingImagePng,
               backgroundColor: const Color(0xFF58CC02),
               navigateTo: '/reading',
-              progress: 0.75, // Contoh progress 75%
+              progress: reading_progress / 100, // Contoh progress 75%
             ),
             const SizedBox(height: 20),
 
             // Listening Card
             FeatureCard(
               title: 'Listen',
-              description: 'Level up your English listening skills with dynamic!',
+              description:
+                  'Level up your English listening skills with dynamic!',
               imagePath: AppAssets.listeningImagePng,
               backgroundColor: const Color(0xFFFFC200),
               navigateTo: '/listening',
-              progress: 0.5, // Contoh progress 50%
+              progress: listening_progress / 100, // Contoh progress 50%
             ),
           ],
         ),
