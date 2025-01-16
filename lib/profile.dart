@@ -159,8 +159,8 @@ class _ViewProfilePage extends State<ViewProfilePage> {
                     Center(
                       child: CircleAvatar(
                         radius: 87.5,
-                        backgroundImage: const NetworkImage(
-                            "https://via.placeholder.com/175"),
+                        backgroundImage:
+                            NetworkImage(userInfo!["profile_images"] + "?time=${DateTime.now().millisecondsSinceEpoch}"),
                         backgroundColor: Colors.transparent,
                       ),
                     ),
@@ -206,7 +206,12 @@ class _ViewProfilePage extends State<ViewProfilePage> {
                               shadowColor: const Color(0xFF04153B),
                               textColor: Colors.white,
                               onPressed: () {
-                                Navigator.pushNamed(context, '/editprofile');
+                                Navigator.pushNamed(context, '/editprofile')
+                                    .then((result) {
+                                  if (result == true) {
+                                    loadSession();
+                                  }
+                                });
                               },
                             ),
                           ),

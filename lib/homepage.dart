@@ -20,38 +20,48 @@ class HomePage extends StatefulWidget {
 
 class _HomePage extends State<HomePage> {
   String? username = "User";
-  String? user_id = "1";
+  String? userId = "1";
+  String url_images = "";
   int reading_progress = 0;
   int listening_progress = 0;
   bool isLogin = false;
+  bool isLoading = true;
 
   Future<void> loadSession() async {
+    isLoading = true;
+    isLogin = false;
+
     final prefs = await SharedPreferences.getInstance();
 
-    reading_progress = 0;
-    listening_progress = 0;
-    username = "User";
-
-    print(user_id);
     setState(() {
-      user_id = prefs.getString("user_id");
+      userId = prefs.getString("user_id");
     });
 
     final response = await http.post(
       Uri.parse('http://10.0.2.2:8000/user/profile'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'user_id': user_id}),
+      body: jsonEncode({'user_id': userId}),
     );
 
     if (response.statusCode == 200) {
       Map<String, dynamic> parsedJson = jsonDecode(response.body);
-      Map<String, dynamic> userInfo = parsedJson['user_info'];
+      Map<String, dynamic> userInfo = parsedJson["user_info"];
 
       setState(() {
-        username = userInfo["username"];
         reading_progress = userInfo["reading_progress"];
         listening_progress = userInfo["listening_progress"];
-        bool isLogin = true;
+        username = userInfo["username"];
+        url_images = userInfo["profile_images"];
+        isLogin = true;
+        isLoading = false;
+      });
+    } else if (response.statusCode == 400) {
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLogin = false;
       });
     }
   }
@@ -71,22 +81,20 @@ class _HomePage extends State<HomePage> {
           children: [
             // Header
             Header(
-              title: 'Hi, ${username}!',
-              profileIcon:
-              AppAssets.smallProfileIconPng, // Gunakan gambar PNG
-              onProfileTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/profile',
-                ).then((result) {
+                title: 'Hi, ${username}!',
+                profileIcon:url_images + "?time=${DateTime.now().millisecondsSinceEpoch}", 
+                onProfileTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/profile',
+                  ).then((result) {
                     if (result == true) {
                       loadSession();
                     }
-                });
-            }),
+                  });
+                }),
             const SizedBox(height: 20),
-
-            if (!isLogin)
+            if (!isLogin && !isLoading)
               AlertDialog(
                 title: Text('You are not logged in'),
                 content: Text('Please log in to continue.'),
@@ -102,27 +110,43 @@ class _HomePage extends State<HomePage> {
                 ],
               ),
 
-            // Reading Card
-            FeatureCard(
-              title: 'Read',
-              description: 'Boost your English reading skills with fun!',
-              imagePath: AppAssets.readingImagePng,
-              backgroundColor: const Color(0xFF58CC02),
-              navigateTo: '/reading',
-              progress: reading_progress / 100, // Contoh progress 75%
-            ),
-            const SizedBox(height: 20),
+            if (isLoading)
+              const Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [CircularProgressIndicator()],
+                  ),
+                ],
+              ),
 
-            // Listening Card
-            FeatureCard(
-              title: 'Listen',
-              description:
-                  'Level up your English listening skills with dynamic!',
-              imagePath: AppAssets.listeningImagePng,
-              backgroundColor: const Color(0xFFFFC200),
-              navigateTo: '/listening',
-              progress: listening_progress / 100, // Contoh progress 50%
-            ),
+            if (isLogin && !isLoading)
+              Column(
+                children: [
+                  // Reading Card
+                  FeatureCard(
+                    title: 'Read',
+                    description: 'Boost your English reading skills with fun!',
+                    imagePath: AppAssets.readingImagePng,
+                    backgroundColor: const Color(0xFF58CC02),
+                    navigateTo: '/reading',
+                    progress: reading_progress / 100, // Contoh progress 75%
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Listening Card
+                  FeatureCard(
+                    title: 'Listen',
+                    description:
+                        'Level up your English listening skills with dynamic!',
+                    imagePath: AppAssets.listeningImagePng,
+                    backgroundColor: const Color(0xFFFFC200),
+                    navigateTo: '/listening',
+                    progress: listening_progress / 100, // Contoh progress 50%
+                  ),
+                ],
+              )
           ],
         ),
       ),

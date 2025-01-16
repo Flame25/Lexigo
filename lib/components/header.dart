@@ -61,15 +61,17 @@ class Header extends StatelessWidget {
           ),
           // Ikon profil di kanan atas
           Positioned(
-            top: 60,
+            top: 63,
             right: 20,
             child: GestureDetector(
               onTap: onProfileTap,
-              child: Image.asset(
-                profileIcon, // Menggunakan path dari parameter
-                height: 40,
-                width: 40,
-                fit: BoxFit.cover,
+              child: ClipOval(
+                child: Image.network(
+                  profileIcon, // Menggunakan path dari parameter
+                  height: 40,
+                  width: 40,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
