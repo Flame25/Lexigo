@@ -52,7 +52,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     // Send base64 string to Flask API
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/upload_image'),
+      Uri.parse('https://lexigo-api.codebloop.my.id/upload_image'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'image': base64String, 'user_id': userId}),
     );
@@ -87,7 +87,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       );
     } else {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/user/update'),
+        Uri.parse('https://lexigo-api.codebloop.my.id/user/update'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
             'username': usernameController.text,
@@ -137,7 +137,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/user/profile'),
+      Uri.parse('https://lexigo-api.codebloop.my.id/user/profile'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'user_id': userId}),
     );

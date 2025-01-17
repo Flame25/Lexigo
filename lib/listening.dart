@@ -3,6 +3,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../components/Reading/progress_bar.dart';
 import '../components/custom_button.dart';
 import '../components/Reading/header_quiz.dart';
+import '../components/Reading/feedback_popup.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class ListeningQuizPage extends StatefulWidget {
   const ListeningQuizPage({super.key});
@@ -14,6 +19,7 @@ class ListeningQuizPage extends StatefulWidget {
 class _ListeningQuizPageState extends State<ListeningQuizPage> {
   // Variabel untuk menyimpan urutan kata dari Group 2 yang dimasukkan ke Group 1
   List<String?> targetWords = List.filled(5, null); // Group 1
+  List<String> answer = "My Mom Is Fourty Eight Years".trim().split(" ");
   List<String> draggableWords = [
     "Years",
     "Is",
@@ -21,9 +27,87 @@ class _ListeningQuizPageState extends State<ListeningQuizPage> {
     "Mom",
     "Fourty Eight"
   ]; // Group 2
+  String? userId = "1";
+  bool isFeedback = false;
+  bool mistake = false;
+
+  void checkAns() {
+    for (int i = 0; i < targetWords.length; i++) {
+      if (targetWords[i] != answer[i]) {
+        mistake = true;
+      }
+    }
+
+    setState(() {
+      isFeedback = true;
+    });
+  }
+
+  Future<void> loadSession() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      userId = prefs.getString("user_id");
+    });
+  }
+
+  Future<void> updateStatus() async {
+    int progress = (1 * 100).toInt();
+    print(progress);
+    final response = await http.post(
+      Uri.parse('https://lexigo-api.codebloop.my.id/user/update_listening'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user_id': userId,
+        'listening_answered': answer,
+        'progress': 100,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['status'] == 'Success') {
+        // Navigate to the next page or show a success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Update Successful'),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final FlutterSoundPlayer _audioPlayer = FlutterSoundPlayer();
+    bool _isPlaying = false;
+
+    @override
+    void initState() {
+      super.initState();
+      loadSession();
+    }
+
+    void _playAudio() async {
+      try {
+        await _audioPlayer.openPlayer();
+        await _audioPlayer.startPlayer(
+          fromURI:
+              'assets/The-Audio.mp3', // You can use a URL or local file path
+          whenFinished: () {
+            setState(() {
+              _isPlaying = false;
+            });
+          },
+        );
+        setState(() {
+          _isPlaying = true;
+        });
+      } catch (e) {
+        print("Error while playing audio: $e");
+      }
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7F7F7),
       body: SingleChildScrollView(
@@ -57,10 +141,10 @@ class _ListeningQuizPageState extends State<ListeningQuizPage> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  'assets/img_listening.png',
-                  fit: BoxFit.cover,
+                  'assets/speak.png',
+                  fit: BoxFit.scaleDown,
                   height: 200,
-                  width: double.infinity,
+                  width: 250,
                 ),
               ),
             ),
@@ -68,9 +152,7 @@ class _ListeningQuizPageState extends State<ListeningQuizPage> {
             // Listen Carefully Button
             const SizedBox(height: 20),
             GestureDetector(
-              onTap: () {
-                print("Listen Carefully clicked!");
-              },
+              onTap: _isPlaying ? null : _playAudio,
               child: Container(
                 height: 45,
                 width: 200,
@@ -261,17 +343,30 @@ class _ListeningQuizPageState extends State<ListeningQuizPage> {
 
                 // Tombol CHECK
                 CustomButton(
-                  text: "CHECK",
-                  width: 120,
-                  backgroundColor: const Color(0xFF58CC02),
-                  shadowColor: const Color(0xFF41A000),
-                  textColor: Colors.white,
-                  onPressed: () {
-                    print("Submitted words: $targetWords");
-                  },
-                ),
+                    text: "CHECK",
+                    width: 120,
+                    backgroundColor: const Color(0xFF58CC02),
+                    shadowColor: const Color(0xFF41A000),
+                    textColor: Colors.white,
+                    onPressed: () async {
+                      print("Submitted words: $targetWords");
+                      checkAns();
+                      await updateStatus();
+                    }),
               ],
             ),
+
+            SizedBox(height: 30),
+            if (isFeedback)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: FeedbackPopup(
+                  isCorrect: !mistake,
+                  onContinue: () {
+                    Navigator.pop(context, true);
+                  },
+                ),
+              ),
           ],
         ),
       ),

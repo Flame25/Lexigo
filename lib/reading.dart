@@ -84,7 +84,7 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
     int progress = (calculateProgress() * 100).toInt();
     print(progress);
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/user/update_reading'),
+      Uri.parse('https://lexigo-api.codebloop.my.id/user/update_reading'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'user_id': userId,
@@ -114,7 +114,7 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
     });
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/user/profile'),
+      Uri.parse('https://lexigo-api.codebloop.my.id/user/profile'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'user_id': userId}),
     );
@@ -140,7 +140,7 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
     }
 
     final response_questions = await http.get(
-      Uri.parse('http://10.0.2.2:8000/questions'),
+      Uri.parse('https://lexigo-api.codebloop.my.id/questions'),
     );
 
     if (response_questions.statusCode == 200) {

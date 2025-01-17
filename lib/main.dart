@@ -8,6 +8,7 @@ import 'package:lexigo/profile.dart';
 import 'package:lexigo/reading.dart';
 import 'package:lexigo/signup.dart';
 import 'landingpage.dart';
+import 'package:flutter/foundation.dart'; // For kIsWeb
 
 void main() {
   runApp(const MyApp());
@@ -52,16 +53,23 @@ class _SplashScreenWithBackgroundChangeState
   void initState() {
     super.initState();
 
-    // Change background color to blue after 15 seconds
-    Future.delayed(const Duration(seconds: 7), () {
-      setState(() {
-        _backgroundColor = const Color(0xFF235390);
+    if (!kIsWeb) {
+      // Change background color to blue after 7 seconds
+      Future.delayed(const Duration(seconds: 7), () {
+        setState(() {
+          _backgroundColor = const Color(0xFF235390);
+        });
       });
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      // Directly show the landing page on the web
+      return LandingPage();
+    }
+
     return AnimatedContainer(
       duration: const Duration(seconds: 1), // Smooth background transition
       color: _backgroundColor, // Background color changes dynamically
@@ -80,3 +88,4 @@ class _SplashScreenWithBackgroundChangeState
     );
   }
 }
+

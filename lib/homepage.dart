@@ -38,7 +38,7 @@ class _HomePage extends State<HomePage> {
     });
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/user/profile'),
+      Uri.parse('https://lexigo-api.codebloop.my.id/user/profile'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'user_id': userId}),
     );

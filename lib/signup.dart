@@ -52,7 +52,7 @@ class _SignupPage extends State<SignupPage> {
       }
 
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/auth/signup'),
+        Uri.parse('https://lexigo-api.codebloop.my.id/auth/signup'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'username': _usernameText.text,

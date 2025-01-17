@@ -89,6 +89,28 @@ def get_questions():
         print(e)
         return jsonify({"Status": "Failed", "message": "Failed to get questions"}), 400
 
+
+@app.route("/user/update_listening", methods=["POST"])
+def update_reading():
+    """
+    Input : String user_id, Array<boolean> reading_answered 
+    """
+    try:
+        data = request.get_json()
+        response = supabase.table("user_data").select("*").eq("user_id", data["user_id"]).execute()
+        response_update = supabase.table('user_data').update({
+            "listening_answered": data["listening_answered"],
+            "listening_progress": data["progress"]
+        }).eq("user_id", data["user_id"]).execute()
+
+        if(response_update.data):
+            return jsonify({"Status": "Sucess", "message": "User account updated successfully"}), 200
+        else:
+            return jsonify({"Status": "Failed", "message": "Server error try again later"}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"Status": "Failed", "message": "Failed to update user account"}), 400
+    
 @app.route("/user/update_reading", methods=["POST"])
 def update_reading():
     """
