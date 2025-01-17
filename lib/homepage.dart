@@ -34,7 +34,7 @@ class _HomePage extends State<HomePage> {
     final prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      userId = prefs.getString("user_id");
+        userId = prefs.getString("user_id");
     });
 
     final response = await http.post(
@@ -48,20 +48,20 @@ class _HomePage extends State<HomePage> {
       Map<String, dynamic> userInfo = parsedJson["user_info"];
 
       setState(() {
-        reading_progress = userInfo["reading_progress"];
-        listening_progress = userInfo["listening_progress"];
-        username = userInfo["username"];
-        url_images = userInfo["profile_images"];
-        isLogin = true;
-        isLoading = false;
+          reading_progress = userInfo["reading_progress"];
+          listening_progress = userInfo["listening_progress"];
+          username = userInfo["username"];
+          url_images = userInfo["profile_images"];
+          isLogin = true;
+          isLoading = false;
       });
     } else if (response.statusCode == 400) {
       setState(() {
-        isLoading = false;
+          isLoading = false;
       });
     } else {
       setState(() {
-        isLogin = false;
+          isLogin = false;
       });
     }
   }
@@ -74,13 +74,20 @@ class _HomePage extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Header
-            Header(
+
+    return WillPopScope(
+      onWillPop: () async {
+        print("HAI");
+        Navigator.pop(context, true);
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF7F7F7),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Header
+              Header(
                 title: 'Hi, ${username}!',
                 profileIcon:url_images + "?time=${DateTime.now().millisecondsSinceEpoch}", 
                 onProfileTap: () {
@@ -88,13 +95,13 @@ class _HomePage extends State<HomePage> {
                     context,
                     '/profile',
                   ).then((result) {
-                    if (result == true) {
-                      loadSession();
-                    }
+                      if (result == true) {
+                        loadSession();
+                      }
                   });
-                }),
-            const SizedBox(height: 20),
-            if (!isLogin && !isLoading)
+              }),
+              const SizedBox(height: 20),
+              if (!isLogin && !isLoading)
               AlertDialog(
                 title: Text('You are not logged in'),
                 content: Text('Please log in to continue.'),
@@ -110,7 +117,7 @@ class _HomePage extends State<HomePage> {
                 ],
               ),
 
-            if (isLoading)
+              if (isLoading)
               const Column(
                 children: [
                   Row(
@@ -121,7 +128,7 @@ class _HomePage extends State<HomePage> {
                 ],
               ),
 
-            if (isLogin && !isLoading)
+              if (isLogin && !isLoading)
               Column(
                 children: [
                   // Reading Card
@@ -141,7 +148,7 @@ class _HomePage extends State<HomePage> {
                     title: 'Listen',
                     func: loadSession,
                     description:
-                        'Level up your English listening skills with dynamic!',
+                    'Level up your English listening skills with dynamic!',
                     imagePath: AppAssets.listeningImagePng,
                     backgroundColor: const Color(0xFFFFC200),
                     navigateTo: '/listening',
@@ -149,7 +156,8 @@ class _HomePage extends State<HomePage> {
                   ),
                 ],
               )
-          ],
+            ],
+          ),
         ),
       ),
     );

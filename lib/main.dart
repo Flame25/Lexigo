@@ -3,8 +3,10 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:lexigo/editprofile.dart';
 import 'package:lexigo/homepage.dart';
 import 'package:lexigo/listening.dart';
+import 'package:lexigo/login.dart';
 import 'package:lexigo/profile.dart';
 import 'package:lexigo/reading.dart';
+import 'package:lexigo/signup.dart';
 import 'landingpage.dart';
 
 void main() {
@@ -28,7 +30,9 @@ class MyApp extends StatelessWidget {
         '/listening': (context) => ListeningQuizPage(),
         '/profile': (context) => ViewProfilePage(),
         '/editprofile': (context) => EditProfilePage(),
-        '/splash': (context) => SplashScreenWithBackgroundChange()
+        '/splash': (context) => SplashScreenWithBackgroundChange(),
+        '/login': (context) => LoginPage(),
+        '/signup': (context) => SignupPage()
       },
     );
   }

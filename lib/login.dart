@@ -14,6 +14,7 @@ class _LoginPage extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  String? userId = "1";
 
   Future<void> saveSession(String userId) async {
     final prefs = await SharedPreferences.getInstance();
@@ -22,7 +23,7 @@ class _LoginPage extends State<LoginPage> {
 
   Future<void> _login() async {
     setState(() {
-        _isLoading = true;
+      _isLoading = true;
     });
 
     print(_usernameController.text);
@@ -31,13 +32,13 @@ class _LoginPage extends State<LoginPage> {
       Uri.parse('http://10.0.2.2:8000/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-          'username': _usernameController.text,
-          'password': _passwordController.text,
+        'username': _usernameController.text,
+        'password': _passwordController.text,
       }),
     );
 
     setState(() {
-        _isLoading = false;
+      _isLoading = false;
     });
 
     if (response.statusCode == 200) {
@@ -45,7 +46,7 @@ class _LoginPage extends State<LoginPage> {
       if (data['status'] == 'Success') {
         // Navigate to the next page or show a success message
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Login Successful'),
+          content: Text('Login Successful'),
         ));
 
         await saveSession(data['user_id']);
@@ -53,17 +54,37 @@ class _LoginPage extends State<LoginPage> {
         Navigator.pushNamed(
           context,
           '/home',
-        );
+        ).then((result) {
+          if (result == true) {
+            loadSession();
+          }
+        });
       } else {
         print("AAAA");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(data['message'] ?? 'Login Failed'),
+          content: Text(data['message'] ?? 'Login Failed'),
         ));
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Server error, please try again later.'),
+        content: Text('Server error, please try again later.'),
       ));
+    }
+  }
+
+  Future<void> loadSession() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      userId = prefs.getString("user_id");
+    });
+
+    if (userId != null) {
+      Navigator.pushNamed(context, '/home').then((result) {
+        if (result == true) {
+          loadSession();
+        }
+      });
     }
   }
 
@@ -75,7 +96,7 @@ class _LoginPage extends State<LoginPage> {
           setState(() {}); // Refresh page
         }
       },
-      child:Material(
+      child: Material(
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           body: Stack(
@@ -84,18 +105,20 @@ class _LoginPage extends State<LoginPage> {
                 'assets/Landingpage.png', // Path to the background PNG
                 fit: BoxFit.cover, // Cover the entire screen
                 width: MediaQuery.of(context).size.width, // Full screen width
-                height: MediaQuery.of(context).size.height, // Full screen height
+                height:
+                    MediaQuery.of(context).size.height, // Full screen height
               ),
               SingleChildScrollView(
                 child: Padding(
                   padding:
-                  EdgeInsets.only(top: 40, bottom: 10, right: 20, left: 20),
+                      EdgeInsets.only(top: 40, bottom: 10, right: 20, left: 20),
                   child: Column(
                     children: [
                       Container(
                         decoration: const BoxDecoration(
-                          color: Color(0xFF003566),
-                          borderRadius: BorderRadius.all(Radius.circular(40))),
+                            color: Color(0xFF003566),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40))),
                         child: Padding(
                           padding: EdgeInsets.all(20),
                           child: Column(
@@ -130,29 +153,29 @@ class _LoginPage extends State<LoginPage> {
                                   TextField(
                                     controller: _usernameController,
                                     style: TextStyle(
-                                      color: Color(0xFFFFF8C6), fontSize: 16),
+                                        color: Color(0xFFFFF8C6), fontSize: 16),
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8)),
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8)),
                                         borderSide: BorderSide(
                                           color: Colors
-                                          .grey, // Border color when not focused
+                                              .grey, // Border color when not focused
                                           width: 1.0, // Border thickness
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8)),
                                         borderSide: BorderSide(
                                           color: Colors
-                                          .blue, // Border color when focused
+                                              .blue, // Border color when focused
                                           width:
-                                          2.0, // Border thickness when focused
+                                              2.0, // Border thickness when focused
                                         ),
                                       ),
                                       hintText: "Username here",
@@ -171,141 +194,142 @@ class _LoginPage extends State<LoginPage> {
                                     controller: _passwordController,
                                     obscureText: true,
                                     style: TextStyle(
-                                      color: Color(0xFFFFF8C6), fontSize: 16),
+                                        color: Color(0xFFFFF8C6), fontSize: 16),
                                     decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(8)),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(8)),
-                                        borderSide: BorderSide(
-                                          color: Colors
-                                          .grey, // Border color when not focused
-                                          width: 1.0, // Border thickness
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8)),
                                         ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(8)),
-                                        borderSide: BorderSide(
-                                          color: Colors
-                                          .blue, // Border color when focused
-                                          width:
-                                          2.0, // Border thickness when focused
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8)),
+                                          borderSide: BorderSide(
+                                            color: Colors
+                                                .grey, // Border color when not focused
+                                            width: 1.0, // Border thickness
+                                          ),
                                         ),
-                                      ),
-                                      hintText: "Password here"),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8)),
+                                          borderSide: BorderSide(
+                                            color: Colors
+                                                .blue, // Border color when focused
+                                            width:
+                                                2.0, // Border thickness when focused
+                                          ),
+                                        ),
+                                        hintText: "Password here"),
                                   ),
                                   _isLoading
-                                  ? Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                      children: [
-                                        CircularProgressIndicator(),
-                                      ],
-                                    ),
-                                  )
-                                  : Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          // Make this container take up the full width
-                                          child: Container(
-                                            padding:
-                                            EdgeInsets.only(bottom: 5),
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFF58A700),
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                12.0),
-                                            ),
-                                            child: Material(
-                                              elevation:
-                                              8.0, // Shadow for additional depth
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                12.0),
-                                              child: Ink(
-                                                decoration: BoxDecoration(
-                                                  color: Color(
-                                                    0xFF58CC02), // Background color
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                    12.0),
-                                                ),
-                                                child: InkWell(
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                    12.0),
-                                                  onTap: _login,
-                                                  child: Padding(
-                                                    padding:
-                                                    const EdgeInsets
-                                                    .only(
-                                                      top: 7.0,
-                                                      bottom: 7.0,
-                                                      left: 12.0,
-                                                      right: 12.0,
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        'LOGIN',
-                                                        style: TextStyle(
-                                                          color:
-                                                          Colors.white,
-                                                          fontSize: 18.0,
+                                      ? Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              CircularProgressIndicator(),
+                                            ],
+                                          ),
+                                        )
+                                      : Padding(
+                                          padding: EdgeInsets.all(20),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                // Make this container take up the full width
+                                                child: Container(
+                                                  padding: EdgeInsets.only(
+                                                      bottom: 5),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFF58A700),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12.0),
+                                                  ),
+                                                  child: Material(
+                                                    elevation:
+                                                        8.0, // Shadow for additional depth
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12.0),
+                                                    child: Ink(
+                                                      decoration: BoxDecoration(
+                                                        color: Color(
+                                                            0xFF58CC02), // Background color
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12.0),
+                                                      ),
+                                                      child: InkWell(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12.0),
+                                                        onTap: _login,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                            top: 7.0,
+                                                            bottom: 7.0,
+                                                            left: 12.0,
+                                                            right: 12.0,
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              'LOGIN',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 18.0,
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
+                                            ],
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
                                   Row(
                                     children: [
                                       Expanded(
                                         child: Padding(
                                           padding: const EdgeInsets.only(
-                                            top: 8, bottom: 8),
+                                              top: 8, bottom: 8),
                                           child: Stack(
                                             children: [
                                               SizedBox(
                                                 height: 24,
                                                 child: LayoutBuilder(
                                                   builder:
-                                                  (context, constraints) {
+                                                      (context, constraints) {
                                                     return Flex(
-                                                      direction: Axis.horizontal,
+                                                      direction:
+                                                          Axis.horizontal,
                                                       mainAxisSize:
-                                                      MainAxisSize.max,
+                                                          MainAxisSize.max,
                                                       mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                      .spaceBetween,
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: List.generate(
                                                         (constraints.constrainWidth() /
-                                                          3)
-                                                        .floor(),
+                                                                3)
+                                                            .floor(),
                                                         (index) => SizedBox(
                                                           height: 3,
                                                           width: 3,
                                                           child: DecoratedBox(
                                                             decoration:
-                                                            BoxDecoration(
-                                                              color: Colors
-                                                              .grey
-                                                              .shade300),
+                                                                BoxDecoration(
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade300),
                                                           ),
                                                         ),
                                                       ),
@@ -318,15 +342,15 @@ class _LoginPage extends State<LoginPage> {
                                                   color: Color(0xFF003566),
                                                   child: Padding(
                                                     padding: EdgeInsets.only(
-                                                      left: 10,
-                                                      right: 10,
-                                                      top: 5,
-                                                      bottom: 5),
+                                                        left: 10,
+                                                        right: 10,
+                                                        top: 5,
+                                                        bottom: 5),
                                                     child: Text(
                                                       "Or",
                                                       style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.white),
+                                                          fontSize: 14,
+                                                          color: Colors.white),
                                                     ),
                                                   ),
                                                 ),
@@ -348,35 +372,37 @@ class _LoginPage extends State<LoginPage> {
                                             decoration: BoxDecoration(
                                               color: Color(0xFF4B4B4B),
                                               borderRadius:
-                                              BorderRadius.circular(12.0),
+                                                  BorderRadius.circular(12.0),
                                             ),
                                             child: Material(
                                               elevation:
-                                              8.0, // Shadow for additional depth
+                                                  8.0, // Shadow for additional depth
                                               borderRadius:
-                                              BorderRadius.circular(12.0),
+                                                  BorderRadius.circular(12.0),
                                               child: Ink(
                                                 decoration: BoxDecoration(
                                                   color: Colors
-                                                  .white, // Background color
+                                                      .white, // Background color
                                                   borderRadius:
-                                                  BorderRadius.circular(12.0),
+                                                      BorderRadius.circular(
+                                                          12.0),
                                                 ),
                                                 child: InkWell(
                                                   borderRadius:
-                                                  BorderRadius.circular(12.0),
+                                                      BorderRadius.circular(
+                                                          12.0),
                                                   onTap: () {
                                                     Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) =>
-                                                        LoginPage(),
+                                                            LoginPage(),
                                                       ),
                                                     );
                                                   },
                                                   child: Padding(
                                                     padding:
-                                                    const EdgeInsets.only(
+                                                        const EdgeInsets.only(
                                                       top: 7.0,
                                                       bottom: 7.0,
                                                       left: 12.0,
@@ -384,27 +410,27 @@ class _LoginPage extends State<LoginPage> {
                                                     ),
                                                     child: Row(
                                                       mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                      .center,
+                                                          MainAxisAlignment
+                                                              .center,
                                                       crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                      .center,
+                                                          CrossAxisAlignment
+                                                              .center,
                                                       children: [
                                                         Image.asset(
                                                           'assets/google_logo.png', // Path to the background PNG
                                                           fit: BoxFit
-                                                          .cover, // Cover the entire screen
+                                                              .cover, // Cover the entire screen
                                                           width:
-                                                          23, // Full screen width
+                                                              23, // Full screen width
                                                           height:
-                                                          23, // Full screen height)
+                                                              23, // Full screen height)
                                                         ),
                                                         SizedBox(width: 5),
                                                         Text(
                                                           'Continue with Google',
                                                           style: TextStyle(
-                                                            color:
-                                                            Color(0xFF4B4B4B),
+                                                            color: Color(
+                                                                0xFF4B4B4B),
                                                             fontSize: 18.0,
                                                           ),
                                                         ),
@@ -421,7 +447,8 @@ class _LoginPage extends State<LoginPage> {
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         "New here? ",
@@ -430,23 +457,26 @@ class _LoginPage extends State<LoginPage> {
                                       InkWell(
                                         onTap: () {
                                           setState(() {
-                                              // Change the text color when clicked
-                                              _signupColor =
-                                              _signupColor == Color(0xFF58CC02)
-                                              ? Color(0xFF003566)
-                                              : Color(0xFF58CC02);
+                                            // Change the text color when clicked
+                                            _signupColor = _signupColor ==
+                                                    Color(0xFF58CC02)
+                                                ? Color(0xFF003566)
+                                                : Color(0xFF58CC02);
                                           });
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                              SignupPage()));
+                                          Navigator.pushNamed(
+                                                  context, '/signup')
+                                              .then((result) {
+                                            if (result == true) {
+                                              loadSession();
+                                            }
+                                          });
                                         },
                                         child: Text(
                                           "sign up",
                                           style: TextStyle(
                                             color: _signupColor,
-                                            decoration: TextDecoration.underline,
+                                            decoration:
+                                                TextDecoration.underline,
                                             decorationColor: _signupColor,
                                             decorationThickness: 2,
                                           ),

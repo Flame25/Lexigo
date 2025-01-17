@@ -8,6 +8,7 @@ import '../components/Reading/feedback_popup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:math';
 
 class ReadingQuizPage extends StatefulWidget {
   const ReadingQuizPage({super.key});
@@ -37,10 +38,10 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
     false
   ]; // Track checked questions
 
-  final List<Map<String, dynamic>> questions = [
+  List<Map<String, dynamic>> questions = [
     {
       "paragraph":
-      "People made the earliest textiles for clothing and dwellings. Then textiles became a necessary article of commerce and trade among the peoples of the world. The trade grew and flourished - from China through India, over the Arabian desert to the ports of Egypt and Turkey, and across the Mediterranean Sea to Italy. Caravans took beautiful silk brocades, cotton calicoes, gauzes, and the fine linens to Europe. Local artisans learned how to make them.",
+          "People made the earliest textiles for clothing and dwellings. Then textiles became a necessary article of commerce and trade among the peoples of the world. The trade grew and flourished - from China through India, over the Arabian desert to the ports of Egypt and Turkey, and across the Mediterranean Sea to Italy. Caravans took beautiful silk brocades, cotton calicoes, gauzes, and the fine linens to Europe. Local artisans learned how to make them.",
       "question": "The text as a whole tells us about ...",
       "options": [
         "the earliest textiles",
@@ -53,7 +54,7 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
     },
     {
       "paragraph":
-      "The invention of the printing press in the 15th century revolutionized the way information was shared and preserved. Before the invention, books were laboriously copied by hand, making them rare and expensive. With the printing press, books could be produced in large quantities, making them more accessible to the general public.",
+          "The invention of the printing press in the 15th century revolutionized the way information was shared and preserved. Before the invention, books were laboriously copied by hand, making them rare and expensive. With the printing press, books could be produced in large quantities, making them more accessible to the general public.",
       "question": "What is the main idea of the text?",
       "options": [
         "The invention of the printing press",
@@ -66,7 +67,7 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
     },
     {
       "paragraph":
-      "Electricity is a form of energy that powers many of the devices and machines we use every day. It is generated in power plants and transmitted through wires to homes and businesses. Electricity has become essential in modern life, enabling everything from lighting and heating to communication and entertainment.",
+          "Electricity is a form of energy that powers many of the devices and machines we use every day. It is generated in power plants and transmitted through wires to homes and businesses. Electricity has become essential in modern life, enabling everything from lighting and heating to communication and entertainment.",
       "question": "Which of the following best summarizes the text?",
       "options": [
         "Electricity's role in modern life",
@@ -86,9 +87,9 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
       Uri.parse('http://10.0.2.2:8000/user/update_reading'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-          'user_id': userId,
-          'reading_answered': answer,
-          'progress': progress
+        'user_id': userId,
+        'reading_answered': answer,
+        'progress': progress
       }),
     );
 
@@ -109,7 +110,7 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
     final prefs = await SharedPreferences.getInstance();
 
     setState(() {
-        userId = prefs.getString("user_id");
+      userId = prefs.getString("user_id");
     });
 
     final response = await http.post(
@@ -123,18 +124,34 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
       Map<String, dynamic> userInfo = parsedJson["user_info"];
 
       List<int> answered_q =
-      userInfo["reading_answered"].whereType<int>().toList();
+          userInfo["reading_answered"].whereType<int>().toList();
       print(answered_q);
 
       setState(() {
-          answer = answered_q;
-          currentQuestionIndex = getNum() - 1  < 1 ? 0 : getNum() - 1;
-          if (answer[currentQuestionIndex] != -1) {
-            selectedOption = answer[currentQuestionIndex];
-            showFeedback = true;
-            checkAnswer();
-          }
-          sessionAnswerCheck();
+        answer = answered_q;
+        currentQuestionIndex = getNum() - 1 < 1 ? 0 : getNum() - 1;
+        if (answer[currentQuestionIndex] != -1) {
+          selectedOption = answer[currentQuestionIndex];
+          showFeedback = true;
+          checkAnswer();
+        }
+        sessionAnswerCheck();
+      });
+    }
+
+    final response_questions = await http.get(
+      Uri.parse('http://10.0.2.2:8000/questions'),
+    );
+
+    if (response_questions.statusCode == 200) {
+      Map<String, dynamic> parsedJson = jsonDecode(response_questions.body);
+      List<dynamic> question_json = parsedJson["questions"];
+      List<Map<String, dynamic>> all_questions =
+          question_json.map((item) => item as Map<String, dynamic>).toList();
+      Random random = Random();
+      all_questions.shuffle(random);
+      setState(() {
+        questions = all_questions.take(3).toList();
       });
     }
   }
@@ -147,16 +164,16 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
 
   void sessionAnswerCheck() {
     setState(() {
-        for (int i = 0; i < answer.length; i++) {
-          if (answer[i] != -1) {
-            if (answer[i] != questions[i]["correctIndex"]) {
-              questionColors[i] = const Color(0xFFFFB8B8); // Red
-            } else {
-              questionColors[i] = const Color(0xFF89E219); // Green
-            }
-            questionsChecked[i] = true;
+      for (int i = 0; i < answer.length; i++) {
+        if (answer[i] != -1) {
+          if (answer[i] != questions[i]["correctIndex"]) {
+            questionColors[i] = const Color(0xFFFFB8B8); // Red
+          } else {
+            questionColors[i] = const Color(0xFF89E219); // Green
           }
+          questionsChecked[i] = true;
         }
+      }
     });
 
     print(questionColors);
@@ -164,14 +181,14 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
 
   void checkAnswer() {
     setState(() {
-        showFeedback = true;
-        isAnswerCorrect =
-        selectedOption == questions[currentQuestionIndex]["correctIndex"];
-        questionColors[currentQuestionIndex] = isAnswerCorrect
-        ? const Color(0xFF89E219) // Green
-        : const Color(0xFFFFB8B8); // Red
-        questionsChecked[currentQuestionIndex] = true; // Mark question as checked
-        answer[currentQuestionIndex] = selectedOption;
+      showFeedback = true;
+      isAnswerCorrect =
+          selectedOption == questions[currentQuestionIndex]["correctIndex"];
+      questionColors[currentQuestionIndex] = isAnswerCorrect
+          ? const Color(0xFF89E219) // Green
+          : const Color(0xFFFFB8B8); // Red
+      questionsChecked[currentQuestionIndex] = true; // Mark question as checked
+      answer[currentQuestionIndex] = selectedOption;
     });
   }
 
@@ -185,24 +202,25 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
     return answer.length;
   }
 
-  void continueQuiz() {
+  void continueQuiz() async{
     if (questionsChecked.every((checked) => checked)) {
-      Navigator.pop(context, 'true'); // Navigate to home if all checked
+      await updateStatus();
+      Navigator.pop(context, true); // Navigate to home if all checked
     } else if (currentQuestionIndex < questions.length - 1) {
       setState(() {
-          currentQuestionIndex++;
-          selectedOption = -1;
-          showFeedback = false;
+        currentQuestionIndex++;
+        selectedOption = -1;
+        showFeedback = false;
       });
     } else {
       int nextUnansweredIndex =
-      questionsChecked.indexWhere((isChecked) => !isChecked);
+          questionsChecked.indexWhere((isChecked) => !isChecked);
 
       if (nextUnansweredIndex != -1) {
         setState(() {
-            currentQuestionIndex = nextUnansweredIndex;
-            selectedOption = -1;
-            showFeedback = false;
+          currentQuestionIndex = nextUnansweredIndex;
+          selectedOption = -1;
+          showFeedback = false;
         });
       }
     }
@@ -221,10 +239,8 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
       onWillPop: () async {
-        print("HAI");
         Navigator.pop(context, true);
         return false;
       },
@@ -250,34 +266,34 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(questions.length, (index) {
-                        return GestureDetector(
-                          onTap: !questionsChecked[index] && !showFeedback
-                          ? () {
-                            setState(() {
-                                currentQuestionIndex = index;
-                                selectedOption = -1;
-                            });
-                          }
-                          : null,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 5),
-                            padding: const EdgeInsets.symmetric(
+                      return GestureDetector(
+                        onTap: !questionsChecked[index] && !showFeedback
+                            ? () {
+                                setState(() {
+                                  currentQuestionIndex = index;
+                                  selectedOption = -1;
+                                });
+                              }
+                            : null,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 5),
+                          padding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 12),
-                            decoration: BoxDecoration(
-                              color: index == currentQuestionIndex
-                              ? const Color(0xFFFFDE00) // Orange for active
-                              : questionColors[index],
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              "${index + 1}",
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          decoration: BoxDecoration(
+                            color: index == currentQuestionIndex
+                                ? const Color(0xFFFFDE00) // Orange for active
+                                : questionColors[index],
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            "${index + 1}",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        );
+                        ),
+                      );
                     }),
                   ),
 
@@ -291,26 +307,27 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
                   // Answer Options
                   const SizedBox(height: 20),
                   ...List.generate(
-                    questions[currentQuestionIndex]["options"].length, (index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: AnswerOption(
-                          optionLabel: String.fromCharCode(65 + index),
-                          optionText: questions[currentQuestionIndex]["options"]
-                          [index],
-                          isSelected: selectedOption == index,
-                          isCorrect: index ==
-                          questions[currentQuestionIndex]["correctIndex"],
-                          highlightCorrect: showFeedback,
-                          onTap: () {
-                            if (!showFeedback) {
-                              setState(() {
-                                  selectedOption = index;
-                              });
-                            }
-                          },
-                        ),
-                      );
+                      questions[currentQuestionIndex]["options"].length,
+                      (index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: AnswerOption(
+                        optionLabel: String.fromCharCode(65 + index),
+                        optionText: questions[currentQuestionIndex]["options"]
+                            [index],
+                        isSelected: selectedOption == index,
+                        isCorrect: index ==
+                            questions[currentQuestionIndex]["correctIndex"],
+                        highlightCorrect: showFeedback,
+                        onTap: () {
+                          if (!showFeedback) {
+                            setState(() {
+                              selectedOption = index;
+                            });
+                          }
+                        },
+                      ),
+                    );
                   }),
 
                   const SizedBox(height: 20),
@@ -328,11 +345,11 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
                         textColor: Colors.black,
                         onPressed: () {
                           setState(() {
-                              currentQuestionIndex == answer.length - 1
-                              ? answer.length - 1
-                              : currentQuestionIndex++;
-                              selectedOption = -1;
-                              showFeedback = false;
+                            currentQuestionIndex == answer.length - 1
+                                ? answer.length - 1
+                                : currentQuestionIndex++;
+                            selectedOption = -1;
+                            showFeedback = false;
                           });
                         },
                       ),
@@ -354,13 +371,13 @@ class _ReadingQuizPageState extends State<ReadingQuizPage> {
 
             // Feedback Pop-Up
             if (showFeedback)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: FeedbackPopup(
-                isCorrect: isAnswerCorrect,
-                onContinue: continueQuiz,
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: FeedbackPopup(
+                  isCorrect: isAnswerCorrect,
+                  onContinue: continueQuiz,
+                ),
               ),
-            ),
           ],
         ),
       ),

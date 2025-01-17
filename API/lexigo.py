@@ -74,6 +74,21 @@ def upload_image():
         return jsonify({"Status": "Failed", "message": "Failed to upload image"}), 400
 
 
+
+@app.route("/questions", methods=["GET"])
+def get_questions():
+    try:
+        response = supabase.table("reading_questions").select("*").execute()
+
+        print(response.data[0])
+        if(response.data):
+            return jsonify({"Status": "Sucess", "message": "Get success", "questions": response.data}), 200
+        else:
+            return jsonify({"Status": "Failed", "message": "Server error try again later"}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"Status": "Failed", "message": "Failed to get questions"}), 400
+
 @app.route("/user/update_reading", methods=["POST"])
 def update_reading():
     """
@@ -196,4 +211,4 @@ def get_profile():
         return jsonify({"status": "Failed", "message": f"{str(e)}"}),400
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8000,threaded=True)
