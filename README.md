@@ -67,5 +67,5 @@ Install APK
 - File APK: [APK](https://limewire.com/d/0493f333-bfcb-4f7a-b63b-b12f51a308ea#Emlkg8D0vTa5uxNAjY4lhc9-aMDkR0wbsBafSfV49sk)
 
 Link Penting
-Video Demo Aplikasi: [Demo Aplikasi]().
+Video Demo Aplikasi: [Demo Aplikasi](https://www.youtube.com/watch?v=CISUQHun2bU).
 Dokumentasi Lengkap: [Dokumen Tugas Besar](https://docs.google.com/document/d/1RKlD77saY4-dF_JzV3VIy4gUEj9TqkdUCQy1iagKJas/edit?usp=sharing).
