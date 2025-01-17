@@ -65,6 +65,7 @@ Install APK
 
 - Untuk Web: [Website Lexigo](https://lexigo-web.codebloop.my.id/)
 - File APK: [APK](https://limewire.com/d/0493f333-bfcb-4f7a-b63b-b12f51a308ea#Emlkg8D0vTa5uxNAjY4lhc9-aMDkR0wbsBafSfV49sk)
+- File APK GDrive: [APK](https://drive.google.com/file/d/1XLev7IRDEGq0TPrlHpQvoiqK4h-ICsyK/view?usp=sharing)
 
 Link Penting
 Video Demo Aplikasi: [Demo Aplikasi](https://www.youtube.com/watch?v=CISUQHun2bU).
