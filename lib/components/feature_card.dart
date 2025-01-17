@@ -7,6 +7,7 @@ class FeatureCard extends StatelessWidget {
   final Color backgroundColor;
   final String navigateTo;
   final double progress; // Progress dalam nilai 0.0 hingga 1.0
+  final Function() func;
 
   const FeatureCard({
     super.key,
@@ -16,13 +17,18 @@ class FeatureCard extends StatelessWidget {
     required this.backgroundColor,
     required this.navigateTo,
     required this.progress,
+    required this.func,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, navigateTo);
+        Navigator.pushNamed(context, navigateTo).then((result) {
+          if (result == true) {
+            func();
+          }
+        });
       },
       child: Container(
         width: 343,
@@ -67,10 +73,13 @@ class FeatureCard extends StatelessWidget {
               right: 10,
               top: 10,
               child: Container(
-                padding: const EdgeInsets.all(8), // Tambahkan padding jika diperlukan
+                padding: const EdgeInsets.all(
+                    8), // Tambahkan padding jika diperlukan
                 decoration: BoxDecoration(
-                  color: Colors.transparent, // Background transparan untuk melihat warna kartu
-                  borderRadius: BorderRadius.circular(13), // Samakan radius dengan kartu
+                  color: Colors
+                      .transparent, // Background transparan untuk melihat warna kartu
+                  borderRadius:
+                      BorderRadius.circular(13), // Samakan radius dengan kartu
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -81,9 +90,9 @@ class FeatureCard extends StatelessWidget {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 28, // Kurangi ukuran font jika perlu
-                        fontFamily: 'Baloo',
                         fontWeight: FontWeight.w400,
-                        height: 1.2, // Atur line-height agar tidak terlalu besar
+                        height:
+                            1.2, // Atur line-height agar tidak terlalu besar
                       ),
                     ),
                     const SizedBox(height: 5),
@@ -109,7 +118,8 @@ class FeatureCard extends StatelessWidget {
               child: Container(
                 width: 328,
                 height: 80, // Tinggi container disesuaikan
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
@@ -163,7 +173,8 @@ class FeatureCard extends StatelessWidget {
                       height: 12, // Tinggi progress bar
                       decoration: BoxDecoration(
                         color: const Color(0xFFE0E0E0), // Warna dasar abu-abu
-                        borderRadius: BorderRadius.circular(64), // Border melengkung penuh
+                        borderRadius: BorderRadius.circular(
+                            64), // Border melengkung penuh
                       ),
                       child: Stack(
                         children: [
@@ -172,8 +183,10 @@ class FeatureCard extends StatelessWidget {
                             widthFactor: progress, // Proporsi progress
                             child: Container(
                               decoration: BoxDecoration(
-                                color: const Color(0xFF003566), // Warna biru untuk progress
-                                borderRadius: BorderRadius.circular(64), // Border melengkung penuh
+                                color: const Color(
+                                    0xFF003566), // Warna biru untuk progress
+                                borderRadius: BorderRadius.circular(
+                                    64), // Border melengkung penuh
                               ),
                             ),
                           ),
@@ -192,7 +205,8 @@ class FeatureCard extends StatelessWidget {
               child: Container(
                 width: 113, // Lebar tombol ditingkatkan
                 height: 45,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 clipBehavior: Clip.antiAlias,
                 decoration: ShapeDecoration(
                   color: Colors.white,
@@ -202,7 +216,8 @@ class FeatureCard extends StatelessWidget {
                   ),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Pisahkan teks dan ikon
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween, // Pisahkan teks dan ikon
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Teks START

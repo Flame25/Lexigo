@@ -53,7 +53,6 @@ class Header extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
-                  fontFamily: 'Baloo',
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -67,14 +66,36 @@ class Header extends StatelessWidget {
               onTap: onProfileTap,
               child: ClipOval(
                 child: Image.network(
-                  profileIcon, // Menggunakan path dari parameter
+                  profileIcon, // Path from the parameter
                   height: 40,
                   width: 40,
                   fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child; // Show the image once it's fully loaded
+                    }
+                    // Show the placeholder while loading
+                    return Image.asset(
+                      'assets/user_logo.png', // Your asset image
+                      fit: BoxFit.cover,
+                      height: 40,
+                      width: 40,
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    // If the image fails to load, show the placeholder
+                    return Image.asset(
+                      'assets/user_logo.png', // Your asset image
+                      fit: BoxFit.cover,
+                      height: 40,
+                      width: 40,
+                    );
+                  },
                 ),
               ),
             ),
           ),
+
         ],
       ),
     );

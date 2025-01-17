@@ -131,6 +131,7 @@ class _HomePage extends State<HomePage> {
                     imagePath: AppAssets.readingImagePng,
                     backgroundColor: const Color(0xFF58CC02),
                     navigateTo: '/reading',
+                    func: loadSession,
                     progress: reading_progress / 100, // Contoh progress 75%
                   ),
                   const SizedBox(height: 20),
@@ -138,6 +139,7 @@ class _HomePage extends State<HomePage> {
                   // Listening Card
                   FeatureCard(
                     title: 'Listen',
+                    func: loadSession,
                     description:
                         'Level up your English listening skills with dynamic!',
                     imagePath: AppAssets.listeningImagePng,

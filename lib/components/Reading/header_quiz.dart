@@ -29,7 +29,6 @@ class QuizHeader extends StatelessWidget {
           style: const TextStyle(
             color: Colors.white,
             fontSize: 32,
-            fontFamily: 'Baloo',
             fontWeight: FontWeight.w400,
           ),
         ),
